@@ -60,7 +60,9 @@ const Home = () => {
 
     try {
       const response = await fetch(
-        `/api/bids/search?email=${encodeURIComponent(isemail)}`
+        `https://buymyoldphoneadmin.vercel.app/api/bids/search?email=${encodeURIComponent(
+          isemail
+        )}`
       );
       const data = await response.json();
 
@@ -86,18 +88,21 @@ const Home = () => {
           setisbid("Bid must be greater than 5000");
         }
         // Submit new bid
-        const postResponse = await fetch("/api/bids/new", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            useremail: isemail,
-            usernumber: bidform.number,
-            userbid: bidform.bid,
-            biddate: biddate,
-          }),
-        });
+        const postResponse = await fetch(
+          "https://buymyoldphoneadmin.vercel.app/api/bids/new",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              useremail: isemail,
+              usernumber: bidform.number,
+              userbid: bidform.bid,
+              biddate: biddate,
+            }),
+          }
+        );
 
         if (postResponse.ok) {
           window.location.reload();
