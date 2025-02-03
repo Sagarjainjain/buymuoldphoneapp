@@ -132,7 +132,7 @@ const Home = () => {
     const data = `${day}/${month}/${year}-${hours}/${minutes}`;
     
     const response = await fetch(
-      "https://buymyoldphoneadmin.vercel.app//api/click/679870fc6fce610925e9e64f",
+      "https://buymyoldphoneadmin.vercel.app/api/click/679870fc6fce610925e9e64f",
       {
         body: JSON.stringify({ clickdate: data }),
         method: "PATCH",
