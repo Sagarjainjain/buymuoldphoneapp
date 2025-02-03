@@ -53,86 +53,89 @@ const Home = () => {
 
     setisloading(true);
 
-    // if (!isemail.trim()) {
-    //   setisemailsame("Please enter an email.");
-    //   return;
-    // }
+    if (!isemail.trim()) {
+      setisemailsame("Please enter an email.");
+      return;
+    }
 
-    // try {
-    //   const response = await fetch(
-    //     `/api/bids/search?email=${encodeURIComponent(isemail)}`
-    //   );
-    //   const data = await response.json();
+    try {
+      const response = await fetch(
+        `/api/bids/search?email=${encodeURIComponent(isemail)}`
+      );
+      const data = await response.json();
 
-    //   if (!response.ok) {
-    //     throw new Error(data.message || "Server error, please try again.");
-    //   }
+      if (!response.ok) {
+        throw new Error(data.message || "Server error, please try again.");
+      }
 
-    //   if (data.message === "not found") {
-    //     // Format the date
-    //     const now = new Date();
-    //     const day = String(now.getDate()).padStart(2, "0");
-    //     const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    //     const year = now.getFullYear();
-    //     const biddate = `${day}/${month}/${year}`;
+      if (data.message === "not found") {
+        // Format the date
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, "0");
+        const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+        const year = now.getFullYear();
+        const biddate = `${day}/${month}/${year}`;
 
-    //     // Validate bidform data
-    //     if (!isemail || !bidform?.number || !bidform?.bid) {
-    //       setisemailsame("Please fill in all fields.");
-    //       return;
-    //     }
+        // Validate bidform data
+        if (!isemail || !bidform?.number || !bidform?.bid) {
+          setisemailsame("Please fill in all fields.");
+          return;
+        }
 
-    //     if (bidform.bid < 5000) {
-    //       setisbid("Bid must be greater than 5000");
-    //     }
-    //     // Submit new bid
-    //     const postResponse = await fetch("/api/bids/new", {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify({
-    //         useremail: isemail,
-    //         usernumber: bidform.number,
-    //         userbid: bidform.bid,
-    //         biddate: biddate,
-    //       }),
-    //     });
+        if (bidform.bid < 5000) {
+          setisbid("Bid must be greater than 5000");
+        }
+        // Submit new bid
+        const postResponse = await fetch("/api/bids/new", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            useremail: isemail,
+            usernumber: bidform.number,
+            userbid: bidform.bid,
+            biddate: biddate,
+          }),
+        });
 
-    //     if (postResponse.ok) {
-    //       window.location.reload();
-    //       setisloading(false);
-    //     } else {
-    //       const postData = await postResponse.json();
-    //       alert(`Error: ${postData.message || "Failed to place bid."}`);
-    //     }
-    //   } else {
-    //     setisemailsame("A bid has already been placed with this email.");
-    //   }
-    // } catch (error) {
-    //   console.error("Error checking email:", error);
-    //   setisemailsame("Something went wrong. Please try again.");
-    // }
+        if (postResponse.ok) {
+          window.location.reload();
+          setisloading(false);
+        } else {
+          const postData = await postResponse.json();
+          alert(`Error: ${postData.message || "Failed to place bid."}`);
+        }
+      } else {
+        setisemailsame("A bid has already been placed with this email.");
+      }
+    } catch (error) {
+      console.error("Error checking email:", error);
+      setisemailsame("Something went wrong. Please try again.");
+    }
   };
 
   const handleclick = async () => {
+    const now = new Date();
+    
+    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const year = now.getFullYear();
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    
+    const data = `${day}/${month}/${year}-${hours}/${minutes}`;
+    
+    const response = await fetch(
+      "https://buymyoldphoneadmin.vercel.app//api/click/679870fc6fce610925e9e64f",
+      {
+        body: JSON.stringify({ clickdate: data }),
+        method: "PATCH",
+      }
+    );
+    if (response.status === 200) {
       setVideoPreview(true);
-    // const now = new Date();
-
-    // const day = String(now.getDate()).padStart(2, "0");
-    // const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    // const year = now.getFullYear();
-    // const hours = String(now.getHours()).padStart(2, "0");
-    // const minutes = String(now.getMinutes()).padStart(2, "0");
-
-    // const data = `${day}/${month}/${year}-${hours}/${minutes}`;
-
-    // const response = await fetch("/api/click/679870fc6fce610925e9e64f", {
-    //   body: JSON.stringify({ clickdate: data }),
-    //   method: "PATCH",
-    // });
-    // if (response.status === 200) {
-    // }
+    }
   };
 
   return (
