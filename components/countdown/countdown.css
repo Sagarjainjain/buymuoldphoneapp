@@ -3,8 +3,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  height: 100%;
+  /* height: 100%; */
   width: 100%;
+  margin: 0px 0 10px 0;
   /* background-color: #121212; */
   color: white;
   font-family: Arial, sans-serif;
@@ -74,6 +75,6 @@
   font-size: 20px;
 }
 .flip-card span {
-  font-size: 14px;
+  font-size: 12px;
 }
 }

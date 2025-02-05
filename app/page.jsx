@@ -1,6 +1,6 @@
 "use client";
 import "./homepage.css";
-import phoneimage from ".././assets/images/phone.png";
+import logo from ".././assets/images/logo.png";
 import phoneimage1 from ".././assets/images/image1.jpg";
 import phoneimage2 from ".././assets/images/image2.jpg";
 import phoneimage3 from ".././assets/images/image3.jpg";
@@ -22,11 +22,11 @@ const Home = () => {
   const [bidform, setbidform] = useState({
     email: "",
     number: "",
-    bid: 5000,
+    bid: 3000,
   });
   const data = {
     title: "Samsung Galaxy M31",
-    price: 5000,
+    price: 3000,
     condition: "Good",
   };
   // const handlesubmit = async (e) => {
@@ -65,12 +65,12 @@ const Home = () => {
         )}`
       );
       const data = await response.json();
-
+      console.log(data.message)
       if (!response.ok) {
         throw new Error(data.message || "Server error, please try again.");
       }
 
-      if (data.message === "not found") {
+      if (data.message === "Not found") {
         // Format the date
         const now = new Date();
         const day = String(now.getDate()).padStart(2, "0");
@@ -86,6 +86,7 @@ const Home = () => {
 
         if (bidform.bid < 5000) {
           setisbid("Bid must be greater than 5000");
+          setisloading(false)
         }
         // Submit new bid
         const postResponse = await fetch(
@@ -113,35 +114,55 @@ const Home = () => {
         }
       } else {
         setisemailsame("A bid has already been placed with this email.");
+        setisloading(false)
       }
     } catch (error) {
       console.error("Error checking email:", error);
       setisemailsame("Something went wrong. Please try again.");
+      setisloading(false)
     }
   };
 
-  const handleclick = async () => {
-    const now = new Date();
-    
-    const day = String(now.getDate()).padStart(2, "0");
-    const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    const year = now.getFullYear();
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    
-    const data = `${day}/${month}/${year}-${hours}/${minutes}`;
-    
-    const response = await fetch(
-      "https://buymyoldphoneadmin.vercel.app/api/click/679870fc6fce610925e9e64f",
-      {
-        body: JSON.stringify({ clickdate: data }),
-        method: "PATCH",
-      }
-    );
-    if (response.status === 200) {
+ const handleClick = async () => {
       setVideoPreview(true);
-    }
-  };
+   const now = new Date();
+   const day = String(now.getDate()).padStart(2, "0");
+   const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+   const year = now.getFullYear();
+   const hours = String(now.getHours()).padStart(2, "0");
+   const minutes = String(now.getMinutes()).padStart(2, "0");
+
+   const data = `${day}/${month}/${year}-${hours}/${minutes}`;
+
+   try {
+     const response = await fetch(
+       "https://buymyoldphoneadmin.vercel.app/api/click/679870fc6fce610925e9e64f",
+       {
+         method: "PATCH",
+         headers: {
+           "Content-Type": "application/json; charset=utf-8",
+           
+         },
+         body: JSON.stringify({ clickdate: data }),
+       }
+     );
+
+     let responseData;
+     try {
+       responseData = await response.json();
+       console.log("Response data:", responseData);
+     } catch (err) {
+       console.warn("Response is not JSON:", err);
+     }
+
+     if (response.ok) {
+   
+     }
+   } catch (error) {
+     console.error("Fetch error:", error.message);
+   }
+ };
+
 
   return (
     <div
@@ -153,7 +174,7 @@ const Home = () => {
       <div className="homepage_sub-container">
         <div className="homepage_container-navbar">
           <div className="homepage_container-navbar_title">
-            <h1>BUYMYOLDPHONE</h1>
+           <Image className="logo"  src={logo} alt="logo"/>
           </div>
         </div>
         <div className="homepage_container-header">
@@ -178,7 +199,7 @@ const Home = () => {
         </div>
         <div className="homepage_container-timer">
           <div className="homepage_container-timer-card">
-            {/* <CountdownTimer/> */}
+            <CountdownTimer />
           </div>
         </div>
         <div className="homepage_container-title">
@@ -189,7 +210,7 @@ const Home = () => {
             </div>
             <div className="homepage_container-title-item-1-button">
               <div className="button_border">
-                <button onClick={handleclick}>See Condition</button>
+                <button onClick={handleClick}>See Condition</button>
               </div>
             </div>
           </div>
@@ -199,7 +220,7 @@ const Home = () => {
           </div>
           <div className="homepage_container-title-item">
             <h1>Base Price</h1>
-            <h4>${data.price}</h4>
+            <h4>₹{data.price}</h4>
           </div>
         </div>
         <div className="homepage_container-footer">
