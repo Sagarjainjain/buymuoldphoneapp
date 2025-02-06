@@ -17,6 +17,7 @@ const Home = () => {
   const [isloading, setisloading] = useState(false);
   const [isemailsame, setisemailsame] = useState("");
   const [isbid, setisbid] = useState("");
+  const [ismobilenumber, setismobilenumber] = useState("");
   const [isemail, setisemail] = useState("");
 
   const [bidform, setbidform] = useState({
@@ -55,6 +56,7 @@ const Home = () => {
 
     if (!isemail.trim()) {
       setisemailsame("Please enter an email.");
+      setisloading(false);
       return;
     }
 
@@ -65,7 +67,7 @@ const Home = () => {
         )}`
       );
       const data = await response.json();
-      console.log(data.message)
+
       if (!response.ok) {
         throw new Error(data.message || "Server error, please try again.");
       }
@@ -81,13 +83,22 @@ const Home = () => {
         // Validate bidform data
         if (!isemail || !bidform?.number || !bidform?.bid) {
           setisemailsame("Please fill in all fields.");
+          setisloading(false);
           return;
         }
 
-        if (bidform.bid < 5000) {
-          setisbid("Bid must be greater than 5000");
-          setisloading(false)
+        // Check if bid is less than 3000
+        if (bidform.bid < 3000) {
+          setisbid("Bid must be greater than 3000");
+          setisloading(false);
+          return; // Exit function if bid is too low
         }
+        if(ismobilenumber < 10) {
+          setismobilenumber("Invalid Mobile number")
+          setisloading(false)
+          return
+        }
+
         // Submit new bid
         const postResponse = await fetch(
           "https://buymyoldphoneadmin.vercel.app/api/bids/new",
@@ -111,58 +122,57 @@ const Home = () => {
         } else {
           const postData = await postResponse.json();
           alert(`Error: ${postData.message || "Failed to place bid."}`);
+          setisloading(false);
         }
       } else {
         setisemailsame("A bid has already been placed with this email.");
-        setisloading(false)
+        setisloading(false);
       }
     } catch (error) {
       console.error("Error checking email:", error);
       setisemailsame("Something went wrong. Please try again.");
-      setisloading(false)
+      setisloading(false);
     }
   };
 
- const handleClick = async () => {
-      setVideoPreview(true);
-   const now = new Date();
-   const day = String(now.getDate()).padStart(2, "0");
-   const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-   const year = now.getFullYear();
-   const hours = String(now.getHours()).padStart(2, "0");
-   const minutes = String(now.getMinutes()).padStart(2, "0");
 
-   const data = `${day}/${month}/${year}-${hours}/${minutes}`;
+  const handleClick = async () => {
+    setVideoPreview(true);
+    // const now = new Date();
+    // const day = String(now.getDate()).padStart(2, "0");
+    // const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    // const year = now.getFullYear();
+    // const hours = String(now.getHours()).padStart(2, "0");
+    // const minutes = String(now.getMinutes()).padStart(2, "0");
 
-   try {
-     const response = await fetch(
-       "https://buymyoldphoneadmin.vercel.app/api/click/679870fc6fce610925e9e64f",
-       {
-         method: "PATCH",
-         headers: {
-           "Content-Type": "application/json; charset=utf-8",
-           
-         },
-         body: JSON.stringify({ clickdate: data }),
-       }
-     );
+    // const data = `${day}/${month}/${year}-${hours}/${minutes}`;
 
-     let responseData;
-     try {
-       responseData = await response.json();
-       console.log("Response data:", responseData);
-     } catch (err) {
-       console.warn("Response is not JSON:", err);
-     }
+    // try {
+    //   const response = await fetch(
+    //     "https://buymyoldphoneadmin.vercel.app/api/click/679870fc6fce610925e9e64f",
+    //     {
+    //       method: "PATCH",
+    //       headers: {
+    //         "Content-Type": "application/json; charset=utf-8",
+    //       },
+    //       body: JSON.stringify({ clickdate: data }),
+    //     }
+    //   );
 
-     if (response.ok) {
-   
-     }
-   } catch (error) {
-     console.error("Fetch error:", error.message);
-   }
- };
+    //   let responseData;
+    //   try {
+    //     responseData = await response.json();
+    //     console.log("Response data:", responseData);
+    //   } catch (err) {
+    //     console.warn("Response is not JSON:", err);
+    //   }
 
+    //   if (response.ok) {
+    //   }
+    // } catch (error) {
+    //   console.error("Fetch error:", error.message);
+    // }
+  };
 
   return (
     <div
@@ -174,7 +184,7 @@ const Home = () => {
       <div className="homepage_sub-container">
         <div className="homepage_container-navbar">
           <div className="homepage_container-navbar_title">
-           <Image className="logo"  src={logo} alt="logo"/>
+            <Image className="logo" src={logo} alt="logo" />
           </div>
         </div>
         <div className="homepage_container-header">
@@ -248,6 +258,7 @@ const Home = () => {
                   }
                   defaultValue={bidform.number}
                 />
+                <p>{ismobilenumber}</p>
               </div>
               <div className="homepage_container-footer-group-item">
                 <label htmlFor="Bid">Your Bid Amount</label>
