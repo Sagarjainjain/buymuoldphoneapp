@@ -138,40 +138,40 @@ const Home = () => {
 
   const handleClick = async () => {
     setVideoPreview(true);
-    // const now = new Date();
-    // const day = String(now.getDate()).padStart(2, "0");
-    // const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    // const year = now.getFullYear();
-    // const hours = String(now.getHours()).padStart(2, "0");
-    // const minutes = String(now.getMinutes()).padStart(2, "0");
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const year = now.getFullYear();
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
 
-    // const data = `${day}/${month}/${year}-${hours}/${minutes}`;
+    const data = `${day}/${month}/${year}-${hours}/${minutes}`;
 
-    // try {
-    //   const response = await fetch(
-    //     "https://buymyoldphoneadmin.vercel.app/api/click/679870fc6fce610925e9e64f",
-    //     {
-    //       method: "PATCH",
-    //       headers: {
-    //         "Content-Type": "application/json; charset=utf-8",
-    //       },
-    //       body: JSON.stringify({ clickdate: data }),
-    //     }
-    //   );
+    try {
+      const response = await fetch(
+        "https://buymyoldphoneadmin.vercel.app/api/click/679870fc6fce610925e9e64f",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: JSON.stringify({ clickdate: data }),
+        }
+      );
 
-    //   let responseData;
-    //   try {
-    //     responseData = await response.json();
-    //     console.log("Response data:", responseData);
-    //   } catch (err) {
-    //     console.warn("Response is not JSON:", err);
-    //   }
+      let responseData;
+      try {
+        responseData = await response.json();
+        console.log("Response data:", responseData);
+      } catch (err) {
+        console.warn("Response is not JSON:", err);
+      }
 
-    //   if (response.ok) {
-    //   }
-    // } catch (error) {
-    //   console.error("Fetch error:", error.message);
-    // }
+      if (response.ok) {
+      }
+    } catch (error) {
+      console.error("Fetch error:", error.message);
+    }
   };
 
   return (
